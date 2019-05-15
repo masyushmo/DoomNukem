@@ -36,8 +36,8 @@
 # define KNEE_HEIGHT 2
 # define BIG_VALUE 9e9
 
-# define MINIMAP_WIDTH 240
-# define MINIMAP_HEIGHT	160
+# define MINIMAP_WIDTH 5120
+# define MINIMAP_HEIGHT	2880
 
 # define NEAR_Y	1e-3f
 # define FAR_Y	5
@@ -45,6 +45,8 @@
 # define FAR_X	20
 # define HFOV (0.5 * WIN_WIDTH)	//horizontal field of view (radians?)
 # define VFOV (0.2 * WIN_HEIGHT)	//vertical field of view (radians?)
+# define WALL_TEXT_WIDTH 256	
+# define WALL_TEXT_HEIGHT 512
 
 # define STRAIGHT 1
 # define STRAFE 2
@@ -79,6 +81,8 @@ typedef struct s_vector	t_vector;
 typedef struct s_render	t_render;
 typedef struct s_plane	t_plane;
 typedef struct s_ui		t_ui;
+
+typedef struct s_texture t_texture;
 
 struct	s_plane
 {
@@ -224,6 +228,12 @@ struct	s_render
 	int				nz1b;
 	int				nz2a;
 	int				nz2b;
+	int				c_za;
+	int				c_zb;
+	int				win_x; // new == x;
+	int				win_y; // new == y;
+	int				fog_distance;
+	double			fog_perc;
 	Uint32			*pix;
 	t_line			line;
 	Uint32		last_frame;
@@ -236,6 +246,20 @@ struct	s_ui
 	SDL_Surface	*minimap_surf;
 };
 
+struct s_texture
+{
+	SDL_Surface		**wall_tex;
+	int				x_text;
+	int				y_text;
+	double			x_point;
+	double			y_point;
+	int				color;
+	int				wall_end;
+	int				x_split;
+	int				y_split;
+};
+
+
 struct	s_doom
 {
 	t_ui		ui;
@@ -244,6 +268,7 @@ struct	s_doom
 	t_map		map;
 	t_game		game;
 	t_player	player;
+	t_texture	texture;
 	
 };
 
@@ -281,4 +306,19 @@ int			project_vector2d(float *ax, float *ay, float bx, float by);
 int			rotate_vertex_xy(t_vertex *a, float psin, float pcos);
 t_plane		rotate_plane_xy(t_plane *plane, float psin, float pcos);
 
+/*
+**texturelaod.c
+*/
+void	wall_tex(t_texture *texture, t_sdl *sdl);
+SDL_Surface	*load_tex(char *path, t_sdl *sdl);
+void	pix_to_surf(t_render *r, int x, int y, int color);
+Uint32	pix_from_text(SDL_Surface *texture, int x, int y);
+int		stop(char *str); // for testing
+int		color_mix(Uint32 start, Uint32 end, float per);
+
+/*
+**main_render.c
+*/
+
+void	textline_draw(int y1, int y2, t_render *r, t_texture *t);
 #endif
