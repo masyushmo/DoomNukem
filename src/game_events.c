@@ -58,7 +58,7 @@ static void	fall(t_player *p, t_map	m, t_game *g)
 	if (g->falling)
 	{
 		p->coord.z += g->velocity.z;
-		p->angle_z -= 0.3 * g->velocity.z; //optional
+		//p->angle_z -= 0.3 * g->velocity.z; //optional
 		g->moving = 1;
 	}
 }
