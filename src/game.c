@@ -23,7 +23,7 @@ static int	init_game_params(t_doom *d)
 	d->game.acceleration = 0.2f;
 	d->texture.x_split = 4;
 	d->texture.y_split = 2;
-	d->render.fog_distance = 20;
+	d->render.fog_distance = 200;
 	d->player.anglecos = sinf(d->player.angle);
 	d->player.anglesin = cosf(d->player.angle);
 	d->render.rendered_sectors = (int*)malloc(sizeof(int) * d->map.num_sect);

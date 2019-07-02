@@ -24,6 +24,7 @@ static void	change_move(t_vertex *move, t_doom *d, int str, int dir)
 		move->x += d->player.anglesin * MOVE_SPEED * dir;
 		move->y -= d->player.anglecos * MOVE_SPEED * dir;
 	}
+	move_sound(&d->sound);
 }
 
 static void	movement_keys(t_doom *d)
@@ -86,6 +87,8 @@ void		player_events(t_doom *d)
 					d->game.velocity.z += 0.6;
 					d->game.falling = 1;
 				}
+				if (!(Mix_Playing(1)))
+					Mix_PlayChannel(1, d->sound.jump, 0);
 			}
 		}
 		if (ev.type == SDL_KEYDOWN)
@@ -100,6 +103,7 @@ void		player_events(t_doom *d)
 		}
 		else if (ev.type == SDL_QUIT)
 			d->game.quit = 1;
+		switch_music(&d->sound, ev);
 	}
 	movement_keys(d);
 	mouse_rotation(d);

@@ -38,7 +38,7 @@ void	draw_skybox(t_render *r, t_doom d)
 		while (d.sky.win_y < WIN_HEIGHT && d.sky.text_y < SKY_H - 1)
 		{
 			r->pix[d.sky.win_y++ * WIN_WIDTH + d.sky.win_x] =
-				pix_from_text(d.texture.sky_box[1], d.sky.text_x, d.sky.text_y);
+				pix_from_text(d.texture.sky_box[0], d.sky.text_x, d.sky.text_y);
 			d.sky.text_y++;
 		}
 		d.sky.win_x++;
