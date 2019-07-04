@@ -12,6 +12,16 @@
 
 #include "../includes/doom.h"
 
+void     init_hud(t_texture *t)
+{
+	t->gun1_r.x = WIN_WIDTH / 2;
+	t->gun1_r.y = WIN_HEIGHT / 3 * 2 + t->gun1[0]->h / 10;
+	t->cross_r.x = (WIN_WIDTH / 2) - t->cross->w;
+	t->cross_r.y = (WIN_HEIGHT / 2) - t->cross->h;
+	t->hp_r.x = 0;
+    t->hp_r.y = WIN_HEIGHT / 14;
+}
+
 static int	init_game_params(t_doom *d)
 {
 	d->game.quit = 0;
@@ -20,7 +30,11 @@ static int	init_game_params(t_doom *d)
 	d->game.moving = 0;
 	d->game.ground = 0;
 	d->game.falling = 1;
+	d->game.flying = 0;
 	d->game.acceleration = 0.2f;
+	d->game.hp_level = 0;
+	d->game.dt = 0;
+    d->ui.fire = 0;
 	d->texture.x_split = 4;
 	d->texture.y_split = 2;
 	d->render.fog_distance = 200;
@@ -28,47 +42,43 @@ static int	init_game_params(t_doom *d)
 	d->player.anglesin = cosf(d->player.angle);
 	d->render.rendered_sectors = (int*)malloc(sizeof(int) * d->map.num_sect);
 	d->render.max_sector_rendered = min(MAX_SECTORS_RENDERED, d->map.num_sect);
-	return (1);
+	d->sr.sprites = (t_sprite*)ft_memalloc(sizeof(t_sprite) * d->map.num_sprites);
+	d->render.ztop = (int*)ft_memalloc(sizeof(int) * WIN_WIDTH);
+	d->render.zbottom = (int*)ft_memalloc(sizeof(int) * WIN_WIDTH);
+	d->render.queue = (t_rend_sector*)ft_memalloc(sizeof(t_rend_sector) * MAX_SECTORS_RENDERED);
+	init_hud(&d->texture);
+    return (1);
 }
 
-int			game_loop(t_doom doom)
+int            game_loop(t_doom doom)
 {
-	init_game_params(&doom);
-	// SDL_DisplayMode DM;
-	while (doom.game.quit != 1)
-	{
-		player_events(&doom);
-		// SDL_GetCurrentDisplayMode(0, &DM);
-		if (doom.game.pause == 0)
-		{
-			game_events(&doom);
-			prepare_to_rendering(&doom.render, doom);
-			draw_skybox(&doom.render, doom);
-			draw_screen(doom);
-			display_core(doom.sdl.render, doom.sdl.texture, doom.sdl.surface);
-			SDL_ShowCursor(SDL_DISABLE);
-			SDL_SetWindowGrab(doom.sdl.window, 1);
-			SDL_SetRelativeMouseMode(1);
-			//draw_sprites();
-			//draw_ui();
-			//set_up_the_timing();
-		}
-		else
-		{
-			SDL_ShowCursor(SDL_ENABLE);
-			SDL_SetRelativeMouseMode(SDL_DISABLE);
-			SDL_SetWindowGrab(doom.sdl.window, 0);
-			display_core(doom.sdl.render, doom.sdl.texture, doom.texture.pause);
-		}
-	}
-	return (1);
-}
+    init_game_params(&doom);
 
-void		display_core(SDL_Renderer *render, SDL_Texture *texture, SDL_Surface *surface)
-{
-	SDL_RenderClear(render);
-	SDL_DestroyTexture(texture);
-	texture = SDL_CreateTextureFromSurface(render, surface);
-	SDL_RenderCopy(render, texture, NULL, NULL);
-	SDL_RenderPresent(render);
+
+    while (doom.game.quit != 1)
+    {
+        doom.ui.prevTime = SDL_GetTicks();
+        player_events(&doom);
+        if (doom.game.pause == 0)
+        {
+            game_events(&doom);
+            prepare_to_rendering(&doom.render, doom);
+            draw_skybox(&doom.render, doom);
+            draw_screen(doom);
+            draw_ui(&doom);
+            //set_up_the_timing();
+        }
+        else
+        {
+            //game is paused
+        }
+
+        while (SDL_GetTicks() - doom.ui.prevTime < 100.0 / 6); // lock fps to 60
+        doom.ui.currTime = SDL_GetTicks();
+        doom.game.dt = doom.ui.currTime - doom.ui.prevTime;
+        doom.ui.fps = doom.game.dt / 1000.0;
+        draw_fps(&doom, (int)(1.0 / doom.ui.fps));
+        SDL_UpdateWindowSurface(doom.sdl.window);
+    }
+    return (1);
 }

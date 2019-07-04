@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sounds.c                                           :+:      :+:    :+:   */
+/*   sound.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasyush <mmasyush@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/06/27 13:27:39 by mmasyush          #+#    #+#             */
-/*   Updated: 2019/06/27 13:27:40 by mmasyush         ###   ########.fr       */
+/*   Created: 2019/07/04 13:47:33 by mmasyush          #+#    #+#             */
+/*   Updated: 2019/07/04 13:47:33 by mmasyush         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Mix_Music	*load_music(char *path)
 
 	load = Mix_LoadMUS(path);
 	if (load == NULL)
-		stop("\033[22;31mERROR: failed to load music");
+		stop("\033[22;31mERROR: failed to load musi1c");
 	return (load);
 }
 
@@ -28,7 +28,7 @@ Mix_Chunk	*load_sound(char *path)
 
 	load = Mix_LoadWAV(path);
 	if (load == NULL)
-		stop("\033[22;31mERROR: failed to load music");
+		stop("\033[22;31mERROR: failed to load sound");
 	return (load);
 }
 
@@ -76,8 +76,9 @@ void		play_music(t_sound *sound, int n)
 void	load_sounds(t_sound *sound)
 {
     sound->n = 0;
+    sound->steps = load_sound("./materials/sounds/step.wav"); // -1chanell
+	sound->jump = load_sound("./materials/sounds/jump.wav"); // 1 chanel
+	sound->run = load_sound("./materials/sounds/run.wav"); // 2
+    sound->gun1 = load_sound("./materials/sounds/gun1.wav");
     sound->music[0] = load_music("./materials/sounds/classic.mp3");
-	sound->steps = load_sound("./materials/sounds/step.wav");
-	sound->jump = load_sound("./materials/sounds/jump.wav");
-	sound->run = load_sound("./materials/sounds/run.wav");
 }

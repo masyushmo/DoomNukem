@@ -26,6 +26,8 @@
 
 # define WIN_WIDTH 1200
 # define WIN_HEIGHT 800
+// # define WIN_WIDTH 1920 //for texting!
+// # define WIN_HEIGHT 1080
 # define SKY_W 4096
 # define SKY_H 2048
 # define WALL_TEXT_W 256	
@@ -40,6 +42,8 @@
 # define KNEE_HEIGHT 2
 # define BIG_VALUE 9e9
 # define MAX_SECTORS_RENDERED 32  //must be the power of 2
+# define COUNT_FPS_NUMBERS 4
+# define MAX_SPEED_UPWARD 1
 # define GREATER 46 // keycode of >
 # define LESER 44 // <
 
@@ -68,30 +72,50 @@
 # define FixMult(a, b) 			((int32_t)(((int64_t)(a) * (b)) >> 8))
 # define FixDiv(a, b) 			((int32_t)(((int64_t)(a) << 8) / (b)))
 
-typedef struct s_doom			t_doom;
+/* EDITOR */
+# define NUM_VER doom->editor.interface.iterator_num_vertex
+# define NUM_SECT doom->editor.interface.nbr_sectors
+# define NB_BUTTONS 11
+# define NB_IMAGES 8
+# define EXIST doom->editor.images[doom->editor.ind_img].exist
+# define NUM_WALL 7 // 3
+# define ESC (key == SDLK_ESCAPE)
+/***/
 
-typedef struct s_sdl			t_sdl;
-typedef struct s_option			t_option;
+typedef struct s_doom		t_doom;
 
-typedef struct s_map			t_map;
-typedef struct s_vertex			t_vertex;
-typedef struct s_sector			t_sector;
-typedef struct s_player			t_player;
-typedef struct s_line			t_line;
-typedef struct s_game			t_game;
-typedef struct s_vector			t_vector;
-typedef struct s_render			t_render;
-typedef struct s_plane			t_plane;
-typedef struct s_ui				t_ui;
-typedef struct s_rend_sector	t_rend_sector;
+typedef struct s_sdl		t_sdl;
+typedef struct s_option		t_option;
 
-typedef struct s_texture		t_texture;
-typedef struct s_skybox			t_skybox;
-typedef struct s_sprite			t_sprite;
+typedef struct s_map		t_map;
+typedef struct s_vertex		t_vertex;
+typedef struct s_sector		t_sector;
+typedef struct s_player		t_player;
+typedef struct s_line		t_line;
+typedef struct s_game		t_game;
+typedef struct s_vector		t_vector;
+typedef struct s_render		t_render;
+typedef struct s_plane		t_plane;
+typedef struct s_ui			t_ui;
+typedef struct	s_rend_sector	t_rend_sector;
+
+typedef struct s_texture	t_texture;
+typedef struct s_skybox		t_skybox;
+typedef struct s_sprite		t_sprite;
 typedef struct	s_sprite_render	t_sprite_render;
 typedef struct	s_sprite_list	t_sprite_list;
 typedef	struct	s_painting		t_painting;
+typedef	struct	s_font			t_font;
 typedef	struct	s_sound			t_sound;
+
+/* EDITOR */
+typedef struct s_editor	t_editor;
+typedef struct s_brezen	t_brezen;
+typedef struct s_interface	t_interface;
+typedef struct s_vertex_int	t_vertex_int;
+typedef struct s_images t_images;
+typedef	struct s_buttons t_buttons;
+/***/
 
 struct	s_plane
 {
@@ -146,29 +170,29 @@ struct	s_sector
 
 struct	s_sprite
 {
-	int				text_no;
-	t_vector		coord;
-	int				w;
-	int				h;
-	int				sector_no;
+	int		text_no;
+	t_vector	coord;
+	int		w;
+	int		h;
+	int		sector_no;
 };
 
 struct	s_painting
 {
-	int				text_no;
-	t_vector		v1;
-	t_vector		v2;
-	int				w;
-	int				h;
-	int				sector_no;
+	int		text_no;
+	t_vector	v1;
+	t_vector	v2;
+	int		w;
+	int		h;
+	int		sector_no;
 };
 
 struct	s_sprite_list
 {
-	SDL_Surface		**sprites;
-	int				c_sprt;
-	int				w;
-	int				h;
+	SDL_Surface	**sprites;
+	int			c_sprt;
+	int			w;
+	int			h;
 	struct	s_sprite_list	*next;
 };
 
@@ -256,10 +280,13 @@ struct	s_game
 	int				falling;
 	int				moving;
 	int				ducking;
+	int				hp_level;
+	int				flying; //new feature
 	int				quit;
 	int				pause;
 	SDL_Event		event;
 	float			eye_height;
+	Uint32           dt;
 };
 
 struct	s_option
@@ -283,29 +310,37 @@ struct	s_rend_sector
 struct	s_render
 {
 	t_rend_sector	now;
-	t_rend_sector	queue[MAX_SECTORS_RENDERED];
+	t_rend_sector	*queue;
 	t_rend_sector	*tail;
 	t_rend_sector	*head;
 	int				*rendered_sectors;
-	int				ztop[WIN_WIDTH];
-	int				zbottom[WIN_WIDTH];
+	int				*ztop;
+	int				*zbottom;
 	t_sector		*sect;
 	t_vertex		t1;
 	t_vertex		t2;
 	t_vertex		v1;
 	t_vertex		v2;
-
+	
+	t_vertex		mc1;
+	t_vertex		mc2;
 	t_vertex		mc;
 	t_vertex		i1;
 	t_vertex		i2;
-
+	
 	int				t1_1_line;
 	int				t1_2_line;
 	int				t2_1_line;
 	int				t2_2_line;
 	int				max_sector_rendered;
+	// float			vx1;
 	float			pcos;
 	float			psin;
+	// float			vy1;
+	// float			vx2;
+	// float			vy2;
+	// float			tx2;
+	// float			ty2;
 	int				begin_x;
 	int				end_x;
 	float			y;
@@ -321,10 +356,14 @@ struct	s_render
 	float			xscale2;
 	float			zscale1;
 	float			zscale2;
-	float			zceil;
-	float			zfloor;
-	float			nzceil;
-	float			nzfloor;
+	float			zceil1;
+	float			zfloor1;
+	float			nzceil1;
+	float			nzfloor1;
+	float			zceil2;
+	float			zfloor2;
+	float			nzceil2;
+	float			nzfloor2;
 	int				z1a;
 	int				z1b;
 	int				z2a;
@@ -333,8 +372,8 @@ struct	s_render
 	int				nz1b;
 	int				nz2a;
 	int				nz2b;
-
-
+	
+	
 	//new things
 	float			p_x;
 	float			p_y;
@@ -342,17 +381,19 @@ struct	s_render
 	float			exact_begin;
 	//added after merge
 	int				c_za;
- 	int				c_zb;
+	int				c_zb;
+	int				c_nza;
+	int				c_nzb;
 	int				win_x; // new == x;
- 	int				win_y; // new == y;
-	int				wall_num; // new uses to give 
+	int				win_y; // new == y;
+	int				wall_num; // new uses to give
 	float tx1;
-    float tx2;
+	float tx2;
 	float tz1;
-    float tz2;
+	float tz2;
 	float lp_x;
 	int				fog_distance;
- 	double			fog_perc;
+	double			fog_perc;
 	double			floor_x;
 	double			floor_y;
 	//till this
@@ -371,23 +412,58 @@ struct	s_ui
 {
 	SDL_Rect		*minimap_rect;
 	SDL_Surface		*minimap_surf;
+	Uint32			prevTime;
+	Uint32			currTime;
+	float			fps;
+
+	int				fire;
+};
+
+struct	s_font
+{
+	SDL_Rect		text_rect;
+	SDL_Color		text_color;
+	TTF_Font		*text_font;
 };
 
 struct s_texture
 {
+	t_sprite_list	*sprites;
+	t_font			*fonts;
+	SDL_Surface		*cross;
+	SDL_Surface		*pause;
 	SDL_Surface		**wall_tex;
 	SDL_Surface		**sky_box;
-	SDL_Surface		*pause;
-	t_sprite_list	*sprites;
+	SDL_Surface		**hp;
+	SDL_Surface		**gun1;
+	SDL_Surface		**gun2;
+	SDL_Surface		**armor;
+	SDL_Surface		**visor;
+	SDL_Rect		gun1_r;
+	SDL_Rect		gun2_r;
+	SDL_Rect		cross_r;
+	SDL_Rect		hp_r;
+	SDL_Rect		armor_r;
+	int				visor_l;
+	int				hp_l;
+	int				gun1_l;
+	int				gun2_l;
+	int				armor_l;
+	int				len;
 	int				c_sprt;
-	unsigned int	x_text;
+	int				x_text;
 	int				y_text;
-	double			x_point;
 	double			y_point;
 	int				color;
 	int				wall_end;
 	int				x_split;
 	int				y_split;
+	float			x1;
+	float			x2;
+	float			percent;
+	float			xscale1;
+	float			xscale2;
+	float 			dy_point;
 };
 
 struct s_skybox
@@ -400,17 +476,98 @@ struct s_skybox
 	int				pos_max;
 };
 
+/* EDITOR */
+struct s_vertex_int
+{
+	int x;
+	int y;
+};
+
+struct	s_interface
+{
+	int tmp_x1;
+	int tmp_y1;
+	int tmp_x2;
+	int tmp_y2;
+	t_vertex_int	arr_vertex_map_coor[9999];
+	t_vertex 		arr_vertex_real_coor[9999];
+	t_sector		sectors[2000];
+	int nbr_vertex;
+	int nbr_sectors;
+	int iterator_num_vertex;
+	int is_drawing_interface;
+	int start_new_sector;
+};
+
+
+struct	s_images
+{
+	SDL_Surface		*image;
+	double			*im_x;
+	double			*im_y;
+	int				exist;
+};
+
+struct	s_buttons
+{
+	int				sec_draw;
+	int				add_buttons;
+	int				chng_text;
+	int				ind_action;
+};
+
+struct s_brezen
+{
+	int		x1;
+	int		x2;
+	int		y1;
+	int		y2;
+	double d;
+	double starty;
+	double startx;
+	double d1;
+	double d2;
+	double iterator;
+	int dy;
+	int dx;
+	int color;
+};
+
+struct	s_editor
+{
+	t_brezen		brezen;
+	t_interface		interface;
+	// t_sector 	saver[9999999];
+	t_images		images[9999]; // consist of different images for editor
+	t_images		sector[9999];
+	t_font			font;
+	int				ind_img; // number of image
+	int				img_press; // press on image
+	int 			is_drawing;
+	int				zoom;
+	int				but1_press;
+	int				is_sector;
+	int				ind_text; // started from 5 
+	t_buttons		press;
+	int				save_del;
+};
+/****/
 struct	s_sound
 {
 	Mix_Music		*music[3];
 	Mix_Chunk		*steps;
 	Mix_Chunk		*run;
 	Mix_Chunk		*jump;
+	Mix_Chunk		*gun1;
+	Mix_Chunk		*gun2;
+	Mix_Chunk		*fly;
+	Mix_Chunk		*hurt;
 	int				n;
 };
 
 struct	s_doom
 {
+	t_sprite_render		sr;
 	t_render		render;
 	t_ui			ui;
 	t_sdl			sdl;
@@ -419,62 +576,71 @@ struct	s_doom
 	t_game			game;
 	t_player		player;
 	t_texture		texture;
-	t_skybox		sky;
 	t_sound			sound;
+	t_skybox		sky;
 	SDL_DisplayMode win_size;
+
 	t_sprite_render	spriter; //draw all things
+	t_editor		editor;
 };
 
 //friendly user stuff
-int				print_usage(void);
-int				error_message(char *message);
+int			print_usage(void);
+int			error_message(char *message);
 
 //UI
-int				prepare_to_draw_ui(t_doom *doom);
+int			prepare_to_draw_ui(t_doom *doom);
+void		draw_fps(t_doom *d, int fps);
 
 
 //parser & initial
-int				read_file(t_doom *doom, char *file_name);
-int				init_sdl(t_sdl *sdl, t_option *options);
+int			read_file(t_doom *doom, char *file_name);
+int			init_sdl(t_sdl *sdl, t_option *options);
 
 
 //game loop
-void			player_events(t_doom *d);
-void			game_events(t_doom *d);
-int				game_loop(t_doom doom);
+void		player_events(t_doom *d);
+void		game_events(t_doom *d);
+int			game_loop(t_doom doom);
 
 
 //render
-int				draw_screen(t_doom doom);
-int				user_interface(t_doom *doom);
-int				draw_minimap(t_doom *d);
+int			draw_screen(t_doom doom);
+int			user_interface(t_doom *doom);
+int			draw_minimap(t_doom *d);
 
 //some math stuff
-float			get_z(t_plane plane, float x, float y);
-int				sign(float x);
-int				rotate_vector_xy(t_vector *a, float psin, float pcos);
-int				get_normal_to_plane(t_vector *v, t_plane *p);
-t_vertex		intersect(t_vertex d1, t_vertex d2, t_vertex d3, t_vertex d4);
-int				project_vector2d(float *ax, float *ay, float bx, float by);
-int				rotate_vertex_xy(t_vertex *a, float psin, float pcos);
-t_plane			rotate_plane_xy(t_plane *plane, float psin, float pcos);
-float			fpercent(float start, float end, float current);
-float			v2dlenght(float vx, float vy);
-t_vertex		find_x_from_screen_coords(float xw, t_vertex start, t_vertex end, t_render *r);
-t_vertex		get_line_param(float x1, float y1, float x2, float y2);
+float		get_z(t_plane plane, float x, float y);
+int			sign(float x);
+int			rotate_vector_xy(t_vector *a, float psin, float pcos);
+int			get_normal_to_plane(t_vector *v, t_plane *p);
+t_vertex	intersect(t_vertex d1, t_vertex d2, t_vertex d3, t_vertex d4);
+int			project_vector2d(float *ax, float *ay, float bx, float by);
+int			rotate_vertex_xy(t_vertex *a, float psin, float pcos);
+t_plane		rotate_plane_xy(t_plane *plane, float psin, float pcos);
+float		fpercent(float start, float end, float current);
+float		v2dlenght(float vx, float vy);
+t_vertex	find_x_from_screen_coords(float xw, t_vertex start, t_vertex end, t_render *r);
+t_vertex	get_line_param(float x1, float y1, float x2, float y2);
+
+/*
+**game.c
+*/
 
 /*
 **texturelaod.c
 */
-void			load_all(t_texture *texture, t_sdl *sdl, t_sound *sound);
 SDL_Surface		*load_tex(char *path, t_sdl *sdl);
-void			pix_to_surf(t_render *r, int x, int y, int color);
+void			load_all(t_texture *t, t_sdl *sdl, t_doom *d);
+void			load_ui(t_texture *texture, t_sdl *sdl, t_doom *d);
+void			resize_surf(int w, int h, SDL_Surface** surf, t_doom *d);
 Uint32			pix_from_text(SDL_Surface *texture, int x, int y);
 int				stop(char *str); // for testing
 int				color_mix(Uint32 start, Uint32 end, float per);
 /*
 **main_render.c
 */
+void			textline_draw(int y1, int y2, t_render *r, t_texture *t);
 void			wall_side(t_render *r, t_doom d);
 void			prepare_to_rendering(t_render *r, t_doom d);
 void			display_core(SDL_Renderer *render, SDL_Texture *texture, SDL_Surface *surface);
@@ -485,6 +651,12 @@ void			floorline_draw(int x, int y, int new_col, int old_col, t_doom d);
 void			draw_skybox(t_render *r, t_doom d);
 void			draw_sky_line(t_render *r, t_doom d);
 /*
+**interface.c
+*/
+void			draw_ui(t_doom *d);
+void			gun_anim(t_doom *d);
+
+/*
 **sprites.c && load.c
 */
 int				translate_and_rotate_sprites(t_sprite	*arr_spr, int len, t_player	p);
@@ -492,12 +664,13 @@ int				sprite_sort(t_sprite *arr_spr, int len);
 void			load_sprites(t_texture *texture, t_sdl *sdl, char *path);
 t_sprite_list	*split_image_to_sprites(SDL_Surface *surr, int w, int h);
 int				*copy_static_arr(int *arr, const int len);
+
+int				game_mod(char *file_name);
 /*
-**add_textures.c 
+**add_textures.c
 */
-void			text_walls(int y1, int y2, t_render *r, t_texture *t);
-void			text_flats(int y1, int y2, t_render *r, t_texture *t);
-int				color_mix(Uint32 start, Uint32 end, float per);
+void			draw_line_of_sprite(t_sprite_render *sr, SDL_Surface *sprtext, t_render *render);
+void			textline_draw(int y1, int y2, t_render *r, t_texture *t);
 /*
 **sounds.c  
 */
@@ -507,5 +680,28 @@ void			move_sound(t_sound *sound);
 void			load_sounds(t_sound *sound);
 void			play_music(t_sound *sound, int n);
 void			switch_music(t_sound *sound, SDL_Event ev);
+
+/* EDITOR */
+int			ft_map_editor(t_doom *doom, char *name);
+int			ft_create_window(t_doom *doom, char *name);
+int			ft_start_edit(t_doom *doom, int fd, char *name);
+int			ft_write_changes_to_file(t_doom *doom, int fd);
+void		ft_check_key(t_doom *doom, SDL_Event *event);
+void		ft_render_editor(t_doom *doom);
+void		ft_render_interface(t_doom *doom);
+void		ft_draw_pixel(t_doom *doom, int x, int y, int color);
+void		ft_render_other(t_doom *doom);
+void		ft_mouse_move_edit(t_doom *doom, SDL_Event *event);
+void		ft_mouse_release_edit(t_doom *doom, SDL_Event *event);
+void		ft_render_previous(t_doom *doom);
+void		ft_draw_axis(t_doom *doom);
+void		ft_prepare_editor(t_doom *doom);
+int			ft_prepare_to_write(t_doom *doom);
+int			ft_specify_coor(int nbr);
+void		ft_refresh_photo(t_doom *doom, SDL_Event *event);
+int 		ft_read_map_edit(t_doom *doom, int fd);
+// brezen in editor
+void		ft_line(t_doom *doom);void	ft_mouse_press_edit(t_doom *doom, SDL_Event *event);
+/***/
 
 #endif

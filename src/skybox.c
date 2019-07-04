@@ -12,8 +12,6 @@
 
 #include "../includes/doom.h"
 
-//x = const * a
-//y = const * tan(b)
 void	draw_skybox(t_render *r, t_doom d)
 {
 	d.sky.win_x = 0;

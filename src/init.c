@@ -20,19 +20,16 @@ int		init_sdl(t_sdl *sdl, t_option *options)
 		return (error_message((char *)SDL_GetError()));
 	if (!(sdl->window = SDL_CreateWindow("DOOM", SDL_WINDOWPOS_CENTERED, \
 		SDL_WINDOWPOS_CENTERED, WIN_WIDTH, \
-		WIN_HEIGHT, SDL_WINDOW_RESIZABLE)))
+		WIN_HEIGHT, SDL_WINDOW_SHOWN)))
 		return (error_message((char *)SDL_GetError()));
-	
-	if (!(sdl->render = SDL_CreateRenderer(sdl->window, -1, \
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
+	if (!(sdl->surface = SDL_GetWindowSurface(sdl->window)))
 		return (error_message((char *)SDL_GetError()));
-	if (!(sdl->texture = SDL_CreateTexture(sdl->render, SDL_PIXELFORMAT_ARGB8888, \
-		SDL_TEXTUREACCESS_TARGET, WIN_WIDTH, WIN_HEIGHT)))
+	if (TTF_Init() == -1)
 		return (error_message((char *)SDL_GetError()));
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 		return (error_message((char *)SDL_GetError()));
-	sdl->surface = SDL_CreateRGBSurface(0, WIN_WIDTH, WIN_HEIGHT, 32, 0, 0, 0, 0);
-	if (sdl->surface == NULL)
-		return (error_message((char *)SDL_GetError()));
+	SDL_ShowCursor(SDL_DISABLE);
+	SDL_SetWindowGrab(sdl->window, 1);
+	SDL_SetRelativeMouseMode(1);
 	return (1);
 }

@@ -12,12 +12,14 @@
 
 #include "../includes/doom.h"
 //Testing kfmgiu fnghcujdyujruhikruhodingtyi
-int		editor_mod(char *file_name, int new_file)
+int		editor_mod(char *file_name)
 {
-	if (new_file)
-		ft_putstr("File creating\n");
-	ft_putstr("Editor\n");
-	return (0);
+    t_doom doom;
+    
+    ft_map_editor(&doom, file_name);
+    //ft_putstr("File creating\n");
+    //ft_putstr("Editor\n");
+    return (0);
 }
 
 int		game_mod(char *file_name)
@@ -28,7 +30,7 @@ int		game_mod(char *file_name)
 		return (error_message("Error with file") + 1);
 	if (init_sdl(&doom.sdl, &doom.options) == 0)
 		return (error_message("Error with SDL init") + 1);
-	load_all(&doom.texture, &doom.sdl, &doom.sound);
+	load_all(&doom.texture, &doom.sdl, &doom);
 	if (game_loop(doom) == 0)
 		return (error_message("Something really sad is happened") + 1);
 	return (0);
@@ -36,15 +38,14 @@ int		game_mod(char *file_name)
 
 int		main(int argc, char **argv)
 {
-	srand(time(NULL));
+	// srand(time(NULL));
 	if (argc == 3)
 	{
+		//system("leaks doom-nukem");
 		if (ft_strcmp(argv[1], "play") == 0)
 			return (game_mod(argv[2]));
-		else if (ft_strcmp(argv[1], "new") == 0)
-			return (editor_mod(argv[2], 1));
 		else if (ft_strcmp(argv[1], "edit") == 0)
-			return (editor_mod(argv[2], 0));
+            return (editor_mod(argv[2]));
 		else
 			print_usage();
 	}
