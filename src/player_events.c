@@ -105,6 +105,22 @@ void		player_events(t_doom *d)
 				printf("Fly mod\n");
 				d->game.flying = !d->game.flying;
 			}
+			if (ev.key.keysym.sym == SDLK_1)
+			{	
+				d->ui.fire = 0;
+				d->ui.gun_num = 0;
+			}
+			if (ev.key.keysym.sym == SDLK_2)
+			{
+				d->ui.start_saw = 0;
+				d->ui.fire = 0;
+				d->ui.gun_num = 1;
+			}
+			if (ev.key.keysym.sym == SDLK_3)
+			{
+				d->ui.fire = 0;
+				d->ui.gun_num = 2;
+			}
 			if (ev.key.keysym.sym == SDLK_g)
 			{
 				d->ui.fire = 1;
@@ -133,11 +149,12 @@ void		player_events(t_doom *d)
 				}
 			}
 		}
-		else if (ev.type == SDL_MOUSEBUTTONDOWN && \
-				ev.button.button == SDL_BUTTON_LEFT)
+		else if (ev.type == SDL_MOUSEBUTTONUP && ev.button.button == SDL_BUTTON_LEFT)
 		{
 			if(d->ui.fire == 0)
 				d->ui.fire = 1;
+			else if(d->ui.fire == 1)
+				d->ui.fire = 0;
 		}
 		else if (ev.type == SDL_QUIT)
 			d->game.quit = 1;

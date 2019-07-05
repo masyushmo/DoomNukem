@@ -30,7 +30,8 @@ int		game_mod(char *file_name)
 		return (error_message("Error with file") + 1);
 	if (init_sdl(&doom.sdl, &doom.options) == 0)
 		return (error_message("Error with SDL init") + 1);
-	load_all(&doom.texture, &doom.sdl, &doom);
+	if (load_all(&doom.texture, &doom.sdl, &doom) == 0) 
+		return (error_message("Error with textures") + 1);
 	if (game_loop(doom) == 0)
 		return (error_message("Something really sad is happened") + 1);
 	return (0);

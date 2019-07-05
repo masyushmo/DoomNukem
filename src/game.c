@@ -15,11 +15,20 @@
 void     init_hud(t_texture *t)
 {
 	t->gun1_r.x = WIN_WIDTH / 2;
-	t->gun1_r.y = WIN_HEIGHT / 3 * 2 + t->gun1[0]->h / 10;
+	t->gun1_r.y = WIN_HEIGHT - t->gun1[0]->h;
+
+    t->gun21_r.x = WIN_WIDTH - t->gun2[0]->w * 1.5;
+	t->gun21_r.y = WIN_HEIGHT - t->gun2[0]->h;
+
+    t->gun22_r.x =  WIN_WIDTH - t->gun2[14]->w * 2;
+	t->gun22_r.y = WIN_HEIGHT - t->gun2[0]->h;
+    
+    t->dude_r.x =  WIN_WIDTH / 3;
+	t->dude_r.y = WIN_HEIGHT - t->dude[0]->h;
+
 	t->cross_r.x = (WIN_WIDTH / 2) - t->cross->w;
 	t->cross_r.y = (WIN_HEIGHT / 2) - t->cross->h;
-	t->hp_r.x = 0;
-    t->hp_r.y = WIN_HEIGHT / 14;
+
 }
 
 static int	init_game_params(t_doom *d)

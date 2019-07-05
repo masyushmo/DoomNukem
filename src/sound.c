@@ -76,9 +76,14 @@ void		play_music(t_sound *sound, int n)
 void	load_sounds(t_sound *sound)
 {
     sound->n = 0;
+    if (!(sound->gun2 = ft_memalloc(sizeof(Mix_Chunk*) * 3)))
+		stop("\033[22;31mERROR: failed to malloc textures");
     sound->steps = load_sound("./materials/sounds/step.wav"); // -1chanell
 	sound->jump = load_sound("./materials/sounds/jump.wav"); // 1 chanel
-	sound->run = load_sound("./materials/sounds/run.wav"); // 2
-    sound->gun1 = load_sound("./materials/sounds/gun1.wav");
+	sound->run = load_sound("./materials/sounds/run.wav"); // cant run now!!
+    sound->gun1 = load_sound("./materials/sounds/gun1.wav"); // 2
+    sound->gun2[0] = load_sound("./materials/sounds/saw_start.wav"); // 3
+    sound->gun2[1] = load_sound("./materials/sounds/saw_idle.wav"); // 4
+    sound->gun2[2] = load_sound("./materials/sounds/saw_atac.wav"); // 5 
     sound->music[0] = load_music("./materials/sounds/classic.mp3");
 }

@@ -415,8 +415,10 @@ struct	s_ui
 	Uint32			prevTime;
 	Uint32			currTime;
 	float			fps;
-
 	int				fire;
+	int				gun_num;
+	int				start_saw;
+	int				idle;
 };
 
 struct	s_font
@@ -439,11 +441,15 @@ struct s_texture
 	SDL_Surface		**gun2;
 	SDL_Surface		**armor;
 	SDL_Surface		**visor;
+	SDL_Surface		**dude;
+	SDL_Rect		dude_r;
 	SDL_Rect		gun1_r;
-	SDL_Rect		gun2_r;
+	SDL_Rect		gun21_r;
+	SDL_Rect		gun22_r;
 	SDL_Rect		cross_r;
 	SDL_Rect		hp_r;
 	SDL_Rect		armor_r;
+	int				dude_l;
 	int				visor_l;
 	int				hp_l;
 	int				gun1_l;
@@ -559,7 +565,8 @@ struct	s_sound
 	Mix_Chunk		*run;
 	Mix_Chunk		*jump;
 	Mix_Chunk		*gun1;
-	Mix_Chunk		*gun2;
+	Mix_Chunk		*win;
+	Mix_Chunk		**gun2;
 	Mix_Chunk		*fly;
 	Mix_Chunk		*hurt;
 	int				n;
@@ -631,8 +638,8 @@ t_vertex	get_line_param(float x1, float y1, float x2, float y2);
 **texturelaod.c
 */
 SDL_Surface		*load_tex(char *path, t_sdl *sdl);
-void			load_all(t_texture *t, t_sdl *sdl, t_doom *d);
-void			load_ui(t_texture *texture, t_sdl *sdl, t_doom *d);
+int				load_all(t_texture *t, t_sdl *sdl, t_doom *d);
+int			load_ui(t_texture *texture, t_sdl *sdl, t_doom *d);
 void			resize_surf(int w, int h, SDL_Surface** surf, t_doom *d);
 Uint32			pix_from_text(SDL_Surface *texture, int x, int y);
 int				stop(char *str); // for testing
