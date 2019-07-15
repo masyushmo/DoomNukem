@@ -155,9 +155,9 @@ void	render_sector(t_render *r, t_doom d)
 			r->zb = (r->win_x - r->x1) * kzb + r->z1b;
 			r->c_za = clamp(r->za, r->ztop[r->win_x], r->zbottom[r->win_x]);
 			r->c_zb = clamp(r->zb, r->ztop[r->win_x], r->zbottom[r->win_x]);
-			vertical_line(r->win_x, r->c_zb + 1, r->zbottom[r->win_x], r, 0xFFFF00); //floor
+			// vertical_line(r->win_x, r->c_zb + 1, r->zbottom[r->win_x], r, 0xFFFF00); //floor
 			//floorline_draw(d.player.coord.x, d.player.coord.y, 0xFFF000, 0xFFFF00, d);
-			vertical_line(r->win_x, r->ztop[r->win_x], r->c_za - 1, r, 0x222222); // cell
+			// vertical_line(r->win_x, r->ztop[r->win_x], r->c_za - 1, r, 0x222222); // cell
 
 			if(r->neighbor >= 0)
 			{
@@ -379,7 +379,7 @@ void	render_sprites(t_sprite_render sr, t_doom d)
 					d.sr.zb = (d.sr.win_x - d.sr.x1) * (d.sr.z2b - d.sr.z1b) / (d.sr.x2 - d.sr.x1) + d.sr.z1b;
 					// d.sr.c_za = max(d.sr.za, d.sr.clmp_top); // i bet i never use this
 					// d.sr.c_zb = min(d.sr.zb, d.sr.clmp_bot);
-					draw_line_of_sprite(&d.sr, d.texture.sprites->sprites[1], &d.render);
+					draw_line_of_sprite(&d.sr, d.texture.sprites->sprites[d.sr.i], &d.render);
 				}
 			}
 			if (++d.sr.tmp == (d.render.queue + MAX_SECTORS_RENDERED))
@@ -404,7 +404,7 @@ int		draw_screen(t_doom d)
 			continue ;
 		render_sector(&d.render, d);
 	}
-	render_painting(d.sr, d);
-	render_sprites(d.sr, d);
+	// render_painting(d.sr, d);
+	// render_sprites(d.sr, d);
 	return (0);
 }

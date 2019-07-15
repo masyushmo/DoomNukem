@@ -42,7 +42,6 @@ int		main(int argc, char **argv)
 	// srand(time(NULL));
 	if (argc == 3)
 	{
-		//system("leaks doom-nukem");
 		if (ft_strcmp(argv[1], "play") == 0)
 			return (game_mod(argv[2]));
 		else if (ft_strcmp(argv[1], "edit") == 0)
@@ -52,5 +51,6 @@ int		main(int argc, char **argv)
 	}
 	else
 		print_usage();
+	
 	return (0);
 }

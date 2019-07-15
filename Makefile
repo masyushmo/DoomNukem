@@ -12,11 +12,11 @@
 
 CC = gcc
 
-FLAGS =  -Wall -g -O3 -fsanitize=address #-Wextra -Werror
+FLAGS =  -Wall -g -O3 #-fsanitize=address #-Wextra -Werror
 
 NAME = doom-nukem
 
-SRC = main.c output.c init.c parser.c game_events.c player_events.c game.c math.c main_render.c plane_functions.c textureload.c skybox.c sprites.c sorting.c editor.c brezen.c interface.c add_textures.c sound.c  
+SRC = main.c output.c init.c parser.c game_events.c player_events.c game.c math.c main_render.c plane_functions.c textureload.c skybox.c sprites.c sorting.c editor.c brezen.c interface.c add_textures.c sound.c
 
 INC = includes/doom.h
 

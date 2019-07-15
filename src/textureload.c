@@ -20,7 +20,7 @@ int		load_all(t_texture *t, t_sdl *sdl, t_doom *d)
 		return (error_message("failed to malloc textures"));
 	if (!(t->fonts = ft_memalloc(sizeof(t_font))))
 		return (error_message("failed to malloc textures"));
-	if (!(t->fonts[0].text_font = TTF_OpenFont("fonts/doom.ttf", 28)))
+	if (!(t->fonts[0].text_font = TTF_OpenFont("fonts/doom.ttf", 40)))
 		return (error_message("failed to malloc textures"));
 	t->wall_tex[0] = load_tex("./materials/textures/walls/WALL3.png", sdl);
 	t->wall_tex[1] = load_tex("./materials/textures/walls/WALL.png", sdl);
@@ -28,9 +28,9 @@ int		load_all(t_texture *t, t_sdl *sdl, t_doom *d)
 	t->wall_tex[3] = load_tex("./materials/textures/walls/WALL1.png", sdl);
 	t->sky_box[0] = load_tex("./materials/textures/sky/sky0.jpg", sdl);
 	t->sky_box[1] = load_tex("./materials/textures/sky/sky1.png", sdl);
-	t->fonts[0].text_color = (SDL_Color){255, 0, 0, 0};
+	t->fonts[0].text_color = (SDL_Color){65, 166, 205, 0};
 	t->fonts[0].text_rect = (SDL_Rect){20, 20, 50, 10};
-	load_sprites(t, sdl, "./materials/textures/sprites/images.png");
+	load_sprites(t, sdl);
 	load_sounds(&d->sound);
 	load_ui(t, sdl, d);
 	return(1);
@@ -41,7 +41,6 @@ int		load_ui(t_texture *t, t_sdl *sdl, t_doom *d)
 	t->gun1_l = 21;
 	t->gun2_l = 18;
 	t->dude_l = 34;
-	t->visor_l = 2;
 	t->hp_l = 5;
 	t->armor_l = 3;
 	if (!(t->dude = ft_memalloc(sizeof(SDL_Surface*) * t->dude_l)))
@@ -54,11 +53,7 @@ int		load_ui(t_texture *t, t_sdl *sdl, t_doom *d)
 	return (error_message("failed to malloc textures"));
 	if (!(t->armor = ft_memalloc(sizeof(SDL_Surface*) * t->armor_l)))
 		return (error_message("failed to malloc textures"));
-	if (!(t->visor = ft_memalloc(sizeof(SDL_Surface*) * t->visor_l)))
-		return (error_message("failed to malloc textures"));
 	t->pause = load_tex("./materials/textures/ui/pause.png", sdl);
-	t->cross = load_tex("./materials/textures/ui/cross.png", sdl);
-
 	t->gun1[0] = load_tex("./materials/textures/ui/gun1/1.png", sdl);
 	t->gun1[1] = load_tex("./materials/textures/ui/gun1/2.png", sdl);
 	t->gun1[2] = load_tex("./materials/textures/ui/gun1/2.png", sdl);
@@ -78,9 +73,8 @@ int		load_ui(t_texture *t, t_sdl *sdl, t_doom *d)
 	t->gun1[16] = load_tex("./materials/textures/ui/gun1/16.png", sdl);
 	t->gun1[17] = load_tex("./materials/textures/ui/gun1/17.png", sdl);
 	t->gun1[18] = load_tex("./materials/textures/ui/gun1/18.png", sdl);
-	t->gun1[9] = load_tex("./materials/textures/ui/gun1/19.png", sdl);
+	t->gun1[19] = load_tex("./materials/textures/ui/gun1/19.png", sdl);
 	t->gun1[20] = load_tex("./materials/textures/ui/gun1/20.png", sdl);
-
 	//CHAINSAW!!!!!!!!
 	t->gun2[0] = load_tex("./materials/textures/ui/gun2/1.png", sdl);
 	t->gun2[1] = load_tex("./materials/textures/ui/gun2/2.png", sdl);
@@ -138,8 +132,8 @@ int		load_ui(t_texture *t, t_sdl *sdl, t_doom *d)
 	t->dude[31] = load_tex("./materials/textures/ui/win/32.png", sdl);
 	t->dude[32] = load_tex("./materials/textures/ui/win/33.png", sdl);
 	t->dude[33] = load_tex("./materials/textures/ui/win/34.png", sdl);
-	t->visor[0] = load_tex("./materials/textures/ui/hud/visor.png", sdl);
-	t->visor[1] = load_tex("./materials/textures/ui/hud/visor1.png", sdl);
+	t->visor = load_tex("./materials/textures/ui/hud/visor.png", sdl);
+	// t->visor[1] = load_tex("./materials/textures/ui/hud/visor1.png", sdl);
 
 	t->hp[0] = load_tex("./materials/textures/ui/hud/hp1.png", sdl);
 	t->hp[1] = load_tex("./materials/textures/ui/hud/hp2.png", sdl);
@@ -147,19 +141,19 @@ int		load_ui(t_texture *t, t_sdl *sdl, t_doom *d)
 	t->hp[3] = load_tex("./materials/textures/ui/hud/hp4.png", sdl);
 	t->hp[4] = load_tex("./materials/textures/ui/hud/hp5.png", sdl);
 
-	t->armor[0] = load_tex("./materials/textures/ui/hud/HP.png", sdl);
-	t->armor[1] = load_tex("./materials/textures/ui/hud/HP.png", sdl);
-	t->armor[2] = load_tex("./materials/textures/ui/hud/HP.png", sdl);
+	// t->armor[0] = load_tex("./materials/textures/ui/hud/HP.png", sdl);
+	// t->armor[1] = load_tex("./materials/textures/ui/hud/HP.png", sdl);
+	// t->armor[2] = load_tex("./materials/textures/ui/hud/HP.png", sdl);
 	t->len = t->gun1_l;
 	resize_surf(WIN_WIDTH / 3, WIN_HEIGHT / 3, t->gun1, d);
 	t->len = t->gun2_l;
 	resize_surf(WIN_WIDTH / 3, WIN_HEIGHT / 3, t->gun2, d);
-	t->len = t->visor_l;
-	resize_surf(WIN_WIDTH, WIN_HEIGHT, t->visor, d);
+	t->len = 1;
+	resize_surf(WIN_WIDTH, WIN_HEIGHT, &t->visor, d);
 	t->len = t->dude_l;
 	resize_surf(WIN_WIDTH / 2, WIN_HEIGHT / 2, t->dude, d);
-	t->len = t->hp_l;
-	resize_surf(WIN_WIDTH, WIN_HEIGHT / 10, t->hp, d);
+	// t->len = t->hp_l;
+	// resize_surf(WIN_WIDTH, WIN_HEIGHT / 10, t->hp, d);
 	return (1);
 }
 
@@ -172,27 +166,26 @@ void	resize_surf(int w, int h, SDL_Surface** surf, t_doom *d)
 	while(++i < d->texture.len)
 	{
 		temp = surf[i];
-		// SDL_FreeSurface(surf[i]);
 		surf[i] = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, d->sdl.surface->format->format);
 		SDL_BlitScaled(temp , 0, surf[i], 0);
-		// SDL_FreeSurface(temp);
+		SDL_FreeSurface(temp);
 	}
 }
 
-void	load_sprites(t_texture *texture, t_sdl *sdl, char *path)
+void	load_sprites(t_texture *texture, t_sdl *sdl)
 {
 	SDL_Surface	*surr;
 	t_sprite_list	*head; //it must read more then 1 sprite should right present it
 
-	surr = load_tex(path, sdl);
+	surr = load_tex("./materials/textures/sprites/saw_sprite.png", sdl);
 	
-	SDL_SetColorKey(surr, SDL_TRUE, SDL_MapRGB(surr->format, 255, 255, 255));
-	texture->c_sprt = 3 * 4;
+	// SDL_SetColorKey(surr, SDL_TRUE, SDL_MapRGB(surr->format, 255, 255, 255));
+	texture->c_sprt = 1;
 	
-	head = split_image_to_sprites(surr, 3, 4); //check for licks and segs
+	head = split_image_to_sprites(surr, 1, 1); //check for licks and segs
 	SDL_FreeSurface(surr);
 	
-	surr = load_tex("./materials/textures/sprites/painting_flowers.jpg", sdl);
+	surr = load_tex("./materials/textures/sprites/dude_sprite.png", sdl);
 	head->next = split_image_to_sprites(surr, 1, 1);
 	SDL_FreeSurface(surr);
 	if (head == 0)

@@ -26,9 +26,8 @@ void     init_hud(t_texture *t)
     t->dude_r.x =  WIN_WIDTH / 3;
 	t->dude_r.y = WIN_HEIGHT - t->dude[0]->h;
 
-	t->cross_r.x = (WIN_WIDTH / 2) - t->cross->w;
-	t->cross_r.y = (WIN_HEIGHT / 2) - t->cross->h;
-
+    t->ammo_r.x = WIN_WIDTH - WIN_WIDTH / 3.5;
+	t->ammo_r.y = WIN_HEIGHT - WIN_HEIGHT / 6;
 }
 
 static int	init_game_params(t_doom *d)
@@ -43,7 +42,7 @@ static int	init_game_params(t_doom *d)
 	d->game.acceleration = 0.2f;
 	d->game.hp_level = 0;
 	d->game.dt = 0;
-    d->ui.fire = 0;
+    d->ui.ammo_1 = 8;
 	d->texture.x_split = 4;
 	d->texture.y_split = 2;
 	d->render.fog_distance = 200;
@@ -76,12 +75,12 @@ int            game_loop(t_doom doom)
             draw_screen(doom);
             draw_ui(&doom);
             //set_up_the_timing();
+            // system("leaks doom-nukem");
         }
         else
         {
             //game is paused
         }
-
         while (SDL_GetTicks() - doom.ui.prevTime < 100.0 / 6); // lock fps to 60
         doom.ui.currTime = SDL_GetTicks();
         doom.game.dt = doom.ui.currTime - doom.ui.prevTime;

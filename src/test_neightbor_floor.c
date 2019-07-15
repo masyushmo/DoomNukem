@@ -138,6 +138,7 @@ int		main(int argc, char **argv)
 	player.anglesin = sinf(player.angle);
 
 
+	map.num_sprites = 2;
 	for (int i = 0; i < 1; i++)
 	{
 		map.sprites[i].text_no = i % 12;
@@ -172,7 +173,7 @@ int		main(int argc, char **argv)
 	map.paint[1].v2.z = 20;
 	map.paint[1].text_no = 0;
 
-	map.num_sprites = 2;
+	// map.num_sprites = 2;
 	write_to_file(map, argv[1], player);
 	return (0);
 }
