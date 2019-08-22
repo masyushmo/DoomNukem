@@ -1,22 +1,33 @@
-#******************************************************************************#
+# **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: apavlov <apavlov@student.unit.ua>          +#+  +:+       +#+         #
+#    By: myuliia <myuliia@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/09 11:40:21 by apavlov           #+#    #+#              #
-#    Updated: 2019/01/09 11:40:22 by apavlov          ###   ########.fr        #
+#    Updated: 2019/08/19 19:32:27 by myuliia          ###   ########.fr        #
 #                                                                              #
-#******************************************************************************#
+# **************************************************************************** #
 
 CC = gcc
 
-FLAGS =  -Wall -g -O3 #-fsanitize=address #-Wextra -Werror
+FLAGS =  -Wall -O3 -Wextra -Ofast -flto -pipe #-fsanitize=address  #-Werror
 
 NAME = doom-nukem
 
-SRC = main.c output.c init.c parser.c game_events.c player_events.c game.c math.c main_render.c plane_functions.c textureload.c skybox.c sprites.c sorting.c editor.c brezen.c interface.c add_textures.c sound.c
+SRC =	main.c output.c init.c parser.c game_events.c player_events.c\
+		game.c math.c main_render.c plane_functions.c textureload.c skybox.c\
+		sprites.c sorting.c editor.c editor2.c brezen.c threads.c sound.c\
+		interface.c changes.c menus.c keys.c painting.c sprite_render.c\
+		sprite_events.c paint_events.c game_mod_for_map_editor.c \
+		map_editor_first_person_view.c editor_check.c editor_floor_ceil.c \
+		editor_prepare.c editor_write_read.c editor_render.c editor_key.c \
+		editor_key_texture.c editor_ft.c editor_mouse.c editor_sprites_change.c \
+		editor_change_scale.c editor_info_in_term.c editor_interface.c \
+		editor_player_events.c editor_init_window.c editor_point_lie.c \
+		editor_save_del.c editor_add_items.c free_game.c editor_write_sprites.c \
+		editor_write_sprites2.c editor_write_sprites3.c
 
 INC = includes/doom.h
 
@@ -55,50 +66,11 @@ all: obj_dir $(FT_LIB) $(NAME)
 obj_dir:
 	mkdir -p $(OBJ_DIR)
 
-clean_map_1:
+clean_map:
 	rm -rf map
 
-map_1: clean_map_1
-	$(CC) $(FLAGS) $(INCLUDES) $(FRAMEWORKS) src/first_map_creator.c  $(LINKS) -o map
-
-clean_map_2:
-	rm -rf map
-
-map_2: clean_map_2
-	$(CC) $(FLAGS) $(INCLUDES) $(FRAMEWORKS) src/second_map_creator.c  $(LINKS) -o map
-
-
-clean_map_3:
-	rm -rf map
-
-map_3: clean_map_3
-	$(CC) $(FLAGS) $(INCLUDES) $(FRAMEWORKS) src/third_map.c  $(LINKS) -o map
-
-clean_map_4:
-	rm -rf map
-
-map_4: clean_map_4
-	$(CC) $(FLAGS) $(INCLUDES) $(FRAMEWORKS) src/test_neightbors_ceil.c  $(LINKS) -o map
-
-clean_map_5:
-	rm -rf map
-
-map_5: clean_map_5
-	$(CC) $(FLAGS) $(INCLUDES) $(FRAMEWORKS) src/neighbor_map.c src/plane_functions.c src/math.c  $(LINKS) -o map
-
-
-clean_map_6:
-	rm -rf map
-
-map_6: clean_map_6
-	$(CC) $(FLAGS) $(INCLUDES) $(FRAMEWORKS) src/test_neightbor_floor.c src/plane_functions.c src/math.c $(LINKS) -o map
-
-
-clean_map_7:
-	rm -rf map
-
-map_7: clean_map_7
-	$(CC) $(FLAGS) $(INCLUDES) $(FRAMEWORKS) src/not_rect_map.c src/plane_functions.c src/math.c $(LINKS) -o map	
+map: clean_map
+	$(CC) $(FLAGS) $(INCLUDES) $(FRAMEWORKS) src/TEST_MUST_BE_ONE.c src/plane_functions.c src/math.c src/changes.c $(LINKS) -o map
 
 $(NAME): $(OBJ)
 	$(CC) $(FLAGS) $(FRAMEWORKS) $(OBJ) $(LINKS) -o $(NAME)
