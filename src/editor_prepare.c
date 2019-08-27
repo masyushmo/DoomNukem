@@ -6,7 +6,7 @@
 /*   By: myuliia <myuliia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 21:08:35 by myuliia           #+#    #+#             */
-/*   Updated: 2019/08/20 01:49:19 by myuliia          ###   ########.fr       */
+/*   Updated: 2019/08/24 18:49:33 by myuliia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	ft_prepare_read2(t_doom *doom, int j)
 	int		l;
 
 	l = -1;
+	doom->map.sectors[j].render_ceil = 1;
 	doom->map.sectors[j].lines = (t_line*)malloc(sizeof(t_line) * MAX_VERT);
 	while (++l < MAX_VERT)
 	{
@@ -38,13 +39,8 @@ void	ft_prepare_read2(t_doom *doom, int j)
 	}
 }
 
-void	ft_prepare_read(t_doom *doom)
+void	ft_prepare_sectors(t_doom *doom, int j)
 {
-	int		j;
-
-	ft_bzero(doom, sizeof(t_doom));
-	j = -1;
-	doom->map.sectors = (t_sector*)malloc(sizeof(t_sector) * MAX_SECTORS);
 	while (++j < MAX_SECTORS)
 	{
 		doom->map.sectors[j].light_lvl = 1;
@@ -68,13 +64,15 @@ void	ft_prepare_read(t_doom *doom)
 		doom->map.sectors[j].y_f_scale = 1.0 / 10;
 		doom->map.sectors[j].x_f_shift = 0;
 		doom->map.sectors[j].y_f_shift = 0;
-		doom->map.sectors[j].render_ceil = 1;
 		ft_prepare_read2(doom, j);
 	}
-	j = -1;
+}
+
+void	ft_prepare_sprites(t_doom *doom, int j)
+{
 	while (++j < MAX_SPRITES_COUNT)
 	{
-		doom->map.sprites[j].spr_num = j;       
+		doom->map.sprites[j].spr_num = j;
 		doom->map.sprites[j].coord = (t_vector){40, 40, 0};
 		doom->map.sprites[j].width = 8;
 		doom->map.sprites[j].end_z = 13;
@@ -88,12 +86,19 @@ void	ft_prepare_read(t_doom *doom)
 		doom->map.sprites[j].own_moves = 1;
 		doom->map.sprites[j].vision_forward = 5;
 		doom->map.sprites[j].vision_backward = -3;
-		doom->map.sprites[j].hp = 20;  // FIX
-		// doom->map.sprites[j].speed = 20;
+		doom->map.sprites[j].hp = 20;
 		doom->map.sprites[j].num_sheet = 6;
-		// doom->map.sprites[j].speed = 20;
 	}
-	
+}
+
+void	ft_prepare_read(t_doom *doom)
+{
+	int		j;
+
+	ft_bzero(doom, sizeof(t_doom));
+	doom->map.sectors = (t_sector*)malloc(sizeof(t_sector) * MAX_SECTORS);
+	ft_prepare_sectors(doom, -1);
+	ft_prepare_sprites(doom, -1);
 	doom->map.num_paint = 0;
 	j = -1;
 	while (++j < MAX_PAINTINGS)

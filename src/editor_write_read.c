@@ -6,7 +6,7 @@
 /*   By: myuliia <myuliia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 21:17:49 by myuliia           #+#    #+#             */
-/*   Updated: 2019/08/20 02:15:21 by myuliia          ###   ########.fr       */
+/*   Updated: 2019/08/24 18:52:01 by myuliia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,7 @@ int		ft_read_map_edit(t_doom *doom, int fd)
 		ft_error(2);
 	i = -1;
 	while (++i < (int)doom->map.num_sect)
-	{
 		ft_read_map_edit2(doom, fd, i);
-	}
 	read(fd, &doom->player, sizeof(t_player));
 	read(fd, &doom->map.num_sprites, sizeof(Uint32));
 	read(fd, doom->map.sprites, sizeof(t_sprite) * doom->map.num_sprites);
@@ -90,8 +88,8 @@ void	ft_write_changes_to_file2(t_doom *doom, int fd, int i)
 
 int		ft_write_changes_to_file(t_doom *doom, int fd)
 {
-	int i;
-// doom->map.num_sect--;
+	int		i;
+
 	fd = open(doom->editor.name_m, O_WRONLY);
 	write(fd, &doom->map.editing, sizeof(int));
 	write(fd, &doom->map.fog, sizeof(int));

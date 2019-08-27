@@ -6,7 +6,7 @@
 /*   By: myuliia <myuliia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/04 18:06:35 by myuliia           #+#    #+#             */
-/*   Updated: 2019/08/14 06:30:07 by myuliia          ###   ########.fr       */
+/*   Updated: 2019/08/22 20:05:33 by myuliia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,16 +106,10 @@ static	int	is_in_sector_chek(t_doom *doom, int sec, t_vertex point)
 		if (product < 0 && (i = -1))
 		{
 			if (++sec == (int)doom->map.num_sect)
-			{
-				ft_putstr("\033[1;31m POINT NOT IN THE SECTOR\033[0m\n");
 				return (-1);
-			}
 		}
 		if (i == (int)doom->map.sectors[sec].num_vert - 1)
-		{
-			ft_put_text("\033[1;32m POINT IN THE SECTOR:  ", sec, "\033[0m\n");
 			return (sec);
-		}
 	}
 	return (-1);
 }

@@ -6,7 +6,7 @@
 /*   By: myuliia <myuliia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/23 17:56:30 by apavlov           #+#    #+#             */
-/*   Updated: 2019/08/14 19:01:15 by myuliia          ###   ########.fr       */
+/*   Updated: 2019/08/24 17:53:26 by myuliia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,16 @@ void	init_hud(t_doom *d)
 {
 	d->texture.gun1_r.x = WIN_WIDTH / 20;
 	d->texture.gun1_r.y = WIN_HEIGHT - d->texture.gun1[0]->h;
-
 	d->texture.gun21_r.x = WIN_WIDTH - d->texture.gun2[0]->w * 1.5;
 	d->texture.gun21_r.y = WIN_HEIGHT - d->texture.gun2[0]->h;
-
 	d->texture.gun22_r.x = WIN_WIDTH - d->texture.gun2[14]->w * 2;
 	d->texture.gun22_r.y = WIN_HEIGHT - d->texture.gun2[0]->h;
-
 	d->texture.dude_r.x = WIN_WIDTH / 3;
 	d->texture.dude_r.y = WIN_HEIGHT - d->texture.dude[0]->h;
-
 	d->texture.ammo_r.x = WIN_WIDTH - WIN_WIDTH / 3.5;
 	d->texture.ammo_r.y = WIN_HEIGHT - WIN_HEIGHT / 6;
-
 	d->texture.hp_r.x = WIN_WIDTH / 4.5;
 	d->texture.hp_r.y = WIN_HEIGHT / 1.2;
-
 	d->texture.keys_r.x = WIN_WIDTH - d->texture.keys->w;
 	d->texture.keys_r.y = WIN_HEIGHT / 3;
 }
@@ -62,6 +56,7 @@ int		init_game_params(t_doom *d)
 		d->ui.ammo_1 = 10 * d->difficulty;
 	}
 	d->game.fuel = 100;
+	d->game.access = 0;
 	d->game.picked_key[0] = 0;
 	d->game.picked_key[1] = 0;
 	d->game.picked_key[2] = 0;
@@ -71,7 +66,7 @@ int		init_game_params(t_doom *d)
 	d->player.anglecos = sinf(d->player.angle);
 	d->player.anglesin = cosf(d->player.angle);
 	d->render.rendered_sectors = (int*)malloc(sizeof(int) * d->map.num_sect);
-	d->render.max_sector_rendered = min(MAX_SECTORS_RENDERED, d->map.num_sect);
+	d->render.max_sector_rendered = MIN(MAX_SECTORS_RENDERED, d->map.num_sect);
 	d->sr.sprites = (t_sprite*)ft_memalloc(sizeof(t_sprite) * d->map.num_sprites);
 	d->render.ztop = (int*)ft_memalloc(sizeof(int) * WIN_WIDTH);
 	d->render.zbottom = (int*)ft_memalloc(sizeof(int) * WIN_WIDTH);
@@ -105,6 +100,7 @@ int		game_loop(t_doom doom)
 		return (0);
 	init_moves(&doom);
 	doom.map.editing = 0;
+	printf("%d\n%d\n", doom.game.pause, doom.game.hp_level);
 	set_mouse(&doom);
 	while (doom.game.quit != 1)
 	{
@@ -133,7 +129,8 @@ int		game_loop(t_doom doom)
 			lose_events(&doom);
 			draw_menu(&doom);
 		}
-		while (SDL_GetTicks() - doom.ui.prevTime < 100.0 / 6);
+		while (SDL_GetTicks() - doom.ui.prevTime < 100.0 / 6)
+				;
 			doom.ui.currTime = SDL_GetTicks();
 			doom.game.dt = doom.ui.currTime - doom.ui.prevTime;
 			doom.ui.fps = doom.game.dt / 1000.0;
@@ -150,6 +147,7 @@ void	set_mouse(t_doom *doom)
 	if (doom->game.hp_level <= 0 ||
 		doom->game.pause == 1 || doom->start_quit == 0)
 	{
+		fflush(stdout);
 		SDL_ShowCursor(SDL_ENABLE);
 		SDL_SetRelativeMouseMode(SDL_DISABLE);
 		SDL_SetWindowGrab(doom->sdl.window, 0);

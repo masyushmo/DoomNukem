@@ -183,7 +183,7 @@ void    gun_anim(t_doom *d)
 				Mix_PlayChannel(3, d->sound.win, 0);
 			SDL_BlitSurface(d->texture.dude[d->ui.gun_anim], 0, d->sdl.surface, &d->texture.dude_r);
 			d->ui.gun_anim = ((d->ui.prevTime - d->ui.clickTime) / 80);
-			if (d->ui.gun_anim > 34)
+			if (d->ui.gun_anim > 33)
 			{
 				d->ui.fire = 0;
 				d->ui.gun_anim = 0;
@@ -225,6 +225,8 @@ void show_keys(t_doom *d)
 	pos[2].y = WIN_HEIGHT / 3 + d->texture.keys->h / 3 + d->texture.keys->h /3;
 	if (d->game.picked_key[0] == 0 || d->game.picked_key[1] == 0 || d->game.picked_key[2] == 0)
 		SDL_BlitSurface(d->texture.keys, 0, d->sdl.surface, &d->texture.keys_r);
+	else
+		d->game.access = 1; 
 
 	if (d->game.picked_key[0] == 1)
 		SDL_BlitSurface(d->texture.sprt[3].sprites[0], 0, d->sdl.surface, &pos[0]);

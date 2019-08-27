@@ -6,13 +6,13 @@
 /*   By: myuliia <myuliia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/31 12:09:40 by apavlov           #+#    #+#             */
-/*   Updated: 2019/08/14 19:14:29 by myuliia          ###   ########.fr       */
+/*   Updated: 2019/08/23 16:45:25 by myuliia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/doom.h"
 
-int			inverse_colors_event(t_doom *d, t_painting *paint)
+int		inverse_colors_event(t_doom *d, t_painting *paint)
 {
 	if (paint->key_state == 1)
 	{
@@ -27,7 +27,7 @@ int			inverse_colors_event(t_doom *d, t_painting *paint)
 	return (0);
 }
 
-int			turn_light_event(t_doom *d, t_painting *paint)
+int		turn_light_event(t_doom *d, t_painting *paint)
 {
 	if (paint->key_state == 1)
 	{
@@ -42,7 +42,7 @@ int			turn_light_event(t_doom *d, t_painting *paint)
 	return (0);
 }
 
-int			radio_event(t_doom *d, t_painting *paint)
+int		radio_event(t_doom *d, t_painting *paint)
 {
 	static int	mus_num = -1;
 
@@ -59,95 +59,92 @@ int			radio_event(t_doom *d, t_painting *paint)
 			Mix_PauseMusic();
 			mus_num = -1;
 		}
-
 	}
 	return (1);
 }
 
-int			lift_floor_event(t_doom *d, t_painting *paint)
+int		lift_floor_event(t_doom *d, t_painting *paint)
 {
 	float	dist;
 	float	*curr;
+	static	int lift;
 
-		printf("we are here %f\n", *curr);
+	lift = 0;
 	if (paint->click == 1)
 	{
-		paint->changes = 1;
-		paint->key_state = !paint->key_state;
-		paint->click = 0;
+		if (d->game.access == 1)
+		{
+			if (!(Mix_Playing(2)))
+				Mix_PlayChannel(2, d->sound.lift[0], 0);
+			lift = 1;
+		}
+		if (lift == 1)
+		{
+			paint->changes = 1;
+			paint->key_state = !paint->key_state;
+			paint->click = 0;
+		}
+		else
+			if (!(Mix_Playing(2)))
+				Mix_PlayChannel(2, d->sound.lift[1], 0);
 	}
 	if (paint->changes)
 	{
+		if (!(Mix_Playing(2)))
+			Mix_PlayChannel(2, d->sound.lift[2], 0);
 		curr = &d->map.sectors[paint->num_of_sect_to_lift].floor_plane.h;
 		dist = paint->speed * d->game.dt / 500.f * (paint->key_state - 0.5f);
 		*curr += dist;
 		paint->changes = 0;
 		if (*curr > paint->low_point  && paint->key_state == 1)
-		{
-			printf("Where are stoping at low point %f\n", *curr);
-			*curr = min(*curr, paint->low_point);
-			printf("Where are stoping at low point %f\n", *curr);
-			fflush(stdout);
-		}
+			*curr = MIN(*curr, paint->low_point);
 		else if (*curr < paint->high_point && paint->key_state == 0)
-		{
-			printf("Where are stoping at high point %f\n", *curr);
-			*curr = max(*curr, paint->high_point);
-			printf("Where are stoping at high point %f\n", *curr);
-			fflush(stdout);
-		}
+			*curr = MAX(*curr, paint->high_point);
 		else
-		{
-			printf("Where are changes at high point %f\n", *curr);
 			paint->changes = 1;
-		}
 	}
 	return (1);
 }
 
-int			lift_ceil_event(t_doom *d, t_painting *paint)
+int		lift_ceil_event(t_doom *d, t_painting *paint)
 {
 	float	dist;
 	float	*curr;
+	static	int lift;
 
+	lift = 0;
 	if (paint->click == 1)
 	{
-		paint->changes = 1;
-		paint->key_state = !paint->key_state;
-		paint->click = 0;
+		if (d->game.access == 1)
+		{
+			if (!(Mix_Playing(2)))
+				Mix_PlayChannel(2, d->sound.lift[0], 0);
+			lift = 1;
+		}
+		if (lift == 1)
+		{
+			paint->changes = 1;
+			paint->key_state = !paint->key_state;
+			paint->click = 0;
+		}
+		else
+			if (!(Mix_Playing(2)))
+				Mix_PlayChannel(2, d->sound.lift[1], 0);
 	}
-	else
+	if (paint->changes)
 	{
+		if (!(Mix_Playing(2)))
+			Mix_PlayChannel(2, d->sound.lift[2], 0);
 		curr = &d->map.sectors[paint->num_of_sect_to_lift].ceil_plane.h;
 		dist = paint->speed * d->game.dt / 500.f * (paint->key_state - 0.5f);
 		*curr += dist;
 		paint->changes = 0;
 		if (*curr > paint->low_point)
-			*curr = min(*curr, paint->low_point);
+			*curr = MIN(*curr, paint->low_point);
 		else if (*curr < paint->high_point)
-			*curr = max(*curr, paint->high_point);
+			*curr = MAX(*curr, paint->high_point);
 		else
 			paint->changes = 1;
 	}
 	return (1);
-}
-
-int			first_aid_event(t_doom *d, t_painting *paint)
-{
-	if (paint->charge > 0)
-	{
-		d->game.hp_level++;
-		paint->changes--;
-	}
-	return (0);
-}
-
-int			get_ammo_event(t_doom *d, t_painting *paint)
-{
-	if (paint->charge > 0)
-	{
-		d->ui.ammo_1++;
-		paint->changes--;
-	}
-	return (0);
 }

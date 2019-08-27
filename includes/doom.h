@@ -6,7 +6,7 @@
 /*   By: myuliia <myuliia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/09 16:26:42 by apavlov           #+#    #+#             */
-/*   Updated: 2019/08/20 03:39:01 by myuliia          ###   ########.fr       */
+/*   Updated: 2019/08/24 19:26:18 by myuliia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@
 # define SPEED_ROTATION_Z 0.05f
 # define MAX_Z_ANGLE 5
 # define MOVE_SPEED 0.2f
-# define SIT_EYE_HEIGHT 3
-# define EYE_HEIGHT 6
+# define SIT_EYE_HEIGHT 6
+# define EYE_HEIGHT 9
 # define HEAD_HEIGHT 1
 # define KNEE_HEIGHT 2
 # define BIG_VALUE 9e9
-# define MAX_SECTORS_RENDERED 32  //must be the power of 2
+# define MAX_SECTORS_RENDERED 128  //must be the power of 2
 # define COUNT_FPS_NUMBERS 4
 # define MAX_SPEED_UPWARD 1
 # define NUM_OF_THRD 4
@@ -50,10 +50,9 @@
 # define LESER 44 // <
 # define PAUSE 96 // §
 # define COUNT_OF_MOVES 2
-# define COUNT_OF_SPRITE_EVENTS 5
-# define COUNT_OF_PAINT_EVENTS 7
+# define COUNT_OF_SPRITE_EVENTS 4
+# define COUNT_OF_PAINT_EVENTS 5
 # define MAX_RANGE_SPRITE_CLICKING 5
-# define SUR_FORMAT 372645892
 # define MAX_SPRITES_COUNT	128
 # define ATTACK_RANGE 1.5
 
@@ -61,33 +60,17 @@
 # define VFOV (0.2 * WIN_HEIGHT)
 # define STRAIGHT 1
 # define STRAFE 2
-# define min(a,b)				(((a) < (b)) ? (a) : (b))
-# define max(a,b)				(((a) > (b)) ? (a) : (b))
-# define clamp(a, mi,ma)		min(max(a,mi),ma)
-# define vxs(x0,y0, x1,y1)		((x0)*(y1) - (x1)*(y0))
-# define dvp(x0,y0, x1,y1)		((x0)*(x1) + (y0)*(y1))
-# define Overlap(a0,a1,b0,b1)	\
-	(min(a0,a1) <= max(b0,b1) && min(b0,b1) <= max(a0,a1))
-
-# define IntersectBox(x0,y0, x1,y1, x2,y2, x3,y3) \
-	(Overlap(x0,x1,x2,x3) && Overlap(y0,y1,y2,y3))
-
-# define PointSide(px,py, x0,y0, x1,y1) \
-	(vxs((x1)-(x0), (y1)-(y0), (px)-(x0), (py)-(y0)))
-
-#define CTL(x0, y0, x1, y1, x2, y2, x3, y3) \
-	(IntersectBox(x0, y0, x1, y1, x2, y2, x3, y3) && \
-		PointSide(x1, y1, x2, y2, x3, y3) < 0)
-
-# define Fix(a)  				((a) * (1LL<<8))
-# define UnFix(a) 				((a) / (float)(1LL<<8))
-# define FixMult(a, b) 			((((a) * (b)) >> 8))
-# define FixDiv(a, b) 			((((a) << 8) / (b)))
+# define MIN(a,b)				(((a) < (b)) ? (a) : (b))
+# define MAX(a,b)				(((a) > (b)) ? (a) : (b))
+# define CLAMP(a, mi,ma)		MIN(MAX(a,mi),ma)
+# define VXS(x0,y0, x1,y1)		((x0)*(y1) - (x1)*(y0))
+# define DVP(x0,y0, x1,y1)		((x0)*(x1) + (y0)*(y1))
 # define INIINSEC(a, b, c, d)	int a = -1; double b; t_vertex c; t_vertex d;
 /* EDITOR */
 # define NB_BUTTONS 17
 # define NB_IMAGES 6
 # define EXIST doom->editor.images[doom->editor.ind_img].exist
+# define EXISTS d->editor.images[d->editor.ind_img].exist
 # define NUM_WALL 7 // 3
 # define ESC (key == SDLK_ESCAPE)
 # define FLOOR 1
@@ -106,7 +89,27 @@
 # define FT_LOAD(a, b, c, d)	char *a; char *b; char *c; int d = 0;
 # define BUT_PRS doom->editor.but1_press
 # define FRE_STR(a, b, c) free(a); free(b); free(c);
-# define LIE_POINT(b, c, d) int b; double c; double d;
+# define LIE_POINT(a, b, c, d) t_vertex a; int b; double c; double d;
+// # define PR_TO_W(a, b, c) a = 10; b = 0; c = 0;
+// # define PR_TO_WR(a, b) a = 1; b = 1;
+# define INT_1(a) int a = -1;
+# define INT_2(a,b) int a = -1; int b = -1;
+# define INT_32(a) Uint32 a = -1;
+
+# define INTARR(a, b) int a[b] = {0};
+
+# define INT1(a) int a;
+# define INT2(a,b) int a,b;
+# define INT3(a,b,c) int a,b,c;
+# define INT4(a,b,c,d) int a,b,c,d;
+# define INT5(a,b,c,d,e) int a,b,c,d,e;
+
+# define INIT2(a,av,b,bv) a=av;b=bv;
+# define INIT3(a,av,b,bv,c,cv) a=av;b=bv;c=cv;
+# define INIT4(a,av,b,bv,c,cv,d,dv) a=av;b=bv;c=cv;d=dv;
+# define INIT5(a,av,b,bv,c,cv,d,dv,e,ev) a=av;b=bv;c=cv;d=dv;e=ev;
+# define INIT6(a,av,b,bv,c,cv,d,dv,e,ev,f,fv) a=av;b=bv;c=cv;d=dv;e=ev;f=fv;
+
 # define PR_TO_W(a, b, c) a = 10; b = 0; c = 0;
 # define PR_TO_WR(a, b) a = 1; b = 1;
 # define MAP_SPRT doom->map.sprites
@@ -124,15 +127,43 @@
 # define CEIL_B doom->map.sectors[doom->player.sector].ceil_plane.b
 # define CEIL_H doom->map.sectors[doom->player.sector].ceil_plane.h
 
+# define INT1(a) int a;
+# define INT2(a,b) int a,b;
+# define INT3(a,b,c) int a,b,c;
+# define INT4(a,b,c,d) int a,b,c,d;
+# define INT5(a,b,c,d,e) int a,b,c,d,e;
+
+# define INIT2(a,av,b,bv) a=av;b=bv;
+# define INIT3(a,av,b,bv,c,cv) a=av;b=bv;c=cv;
+# define INIT4(a,av,b,bv,c,cv,d,dv) a=av;b=bv;c=cv;d=dv;
+# define INIT5(a,av,b,bv,c,cv,d,dv,e,ev) a=av;b=bv;c=cv;d=dv;e=ev;
+# define INIT6(a,av,b,bv,c,cv,d,dv,e,ev,f,fv) a=av;b=bv;c=cv;d=dv;e=ev;f=fv;
+
+# define IVER1(a) t_vertex a;
+# define IVER2(a,b) t_vertex a,b;
+# define IVER3(a,b,c) t_vertex a,b,c;
+# define IVER4(a,b,c,d) t_vertex a,b,c,d;
+
 # define SECTOR_PL doom->map.sectors[doom->player.sector]
 
 # define NUM_TEXT 18
+# define MAP_SPRT doom->map.sprites
 # define NUM_VERT (int)doom->map.sectors[doom->map.num_sect].num_vert
 # define NUM_VERTEX doom->map.sectors[i].num_vert
-# define NUM_SECT doom->map.num_sect
+# define MAP_N_VER map->sectors[i].num_vert
 # define SECTOR doom->editor.sector
 # define IMG doom->editor.images
+# define IMGS d->editor.images
 # define SDL_SURF doom->editor.sdl.surface
+# define DEDI	doom->editor
+# define MAPSEC	doom->map.sectors
+# define NUM_SECT doom->map.num_sect
+# define MAPS_NUM doom->map.sectors[doom->map.num_sect]
+# define DBRZ	doom->editor.brezen
+# define DEFLN doom->editor.fline
+# define DEFL d->editor.fline
+# define PT doom->map.paint[pain]
+
 
 /** action paintings **/
 # define NUM_ACT 5
@@ -167,6 +198,8 @@
 # define TCYN  "\x1B[36m"
 # define TWHY  "\x1B[37m"
 /***/
+
+# define TXTS d->texture.sprt
 
 typedef struct s_doom		t_doom;
 
@@ -491,6 +524,7 @@ struct	s_game
 	int				hp_level;
 	int				damage;
 	int				kills;
+	int				access;
 	int				play;
 	int				story;
 	SDL_Event		event;
@@ -508,6 +542,7 @@ struct	s_option
 struct	s_rend_sector
 {
 	Uint32			num;
+	t_rend_sector	*prev;
 	int				sx1;
 	int				sx2;
 	int				ztop1;
@@ -839,6 +874,14 @@ struct	s_editor
 	int				fog_colors[9];
 	int				ind_fog;
 	char			*name_m;
+	int				more;
+	t_vertex		*v1;
+	t_vertex		*v2;
+	t_vertex		point;
+	int				i;
+	int				k;
+	double			koef;
+	double			c;
 	t_lpoint		lp;
 };
 /****/
@@ -850,13 +893,14 @@ struct	s_sound
 	Mix_Chunk		*jump;
 	Mix_Chunk		*click;
 	Mix_Chunk		*gun1[3];
+	Mix_Chunk		*gun2[3];
+	Mix_Chunk		*lift[3];
 	Mix_Chunk		*win;
 	Mix_Chunk		*death;
 	Mix_Chunk		*mobdeath[3];
 	Mix_Chunk		*mobsound[5];
 	Mix_Chunk		*mobhurt[3];
 	Mix_Chunk		*pickup[4];
-	Mix_Chunk		*gun2[3];
 	Mix_Chunk		*hurt;
 	int				n;
 };
@@ -979,8 +1023,13 @@ void		reversed_textline_draw(int y1, int y2, t_render *r, t_thread *t);
 void		textline_draw(int y1, int y2, t_render *r, t_thread *t);
 void		upper_textline(int y1, int y2, t_render *r, t_thread *t);
 void		lower_textline(int y1, int y2, t_render *r, t_thread *t);
+void		prepare_to_rendering(t_render *r, t_doom d);
 Uint32		get_fog_color(Uint32 color, Uint32 fog_color, float y);
+void		prepare_to_render_next_sector(t_render *r);
 void		render_sprites(t_doom *d);
+void		render_sector_first_part(t_render *r, int i);
+int			render_sector_cliping_lines(t_render *r);
+void		render_sector(t_render *r, t_doom *d);
 void		render_painting(t_doom *d);
 void		draw_line_of_sprite(t_sprite_render *sr, \
 										SDL_Surface *sprtext, t_render *render);
@@ -996,6 +1045,10 @@ void		paint_vert_cal(t_vector *t1, t_vector *t2, \
 void		sprite_vert_cal(t_vector *t1, t_vector *t2, \
 										t_sprite *sprite, t_player p);
 //some math stuff
+int			ctl(t_vertex v1, t_vertex v2, t_vertex v3, t_vertex v4);
+float		pointside(t_vertex vp, t_vertex v1, t_vertex v2);
+int			intersectbox(t_vertex v1, t_vertex v2, t_vertex v3, t_vertex v4);
+int			overlap(float a0, float a1, float b0, float b1);
 float		get_z(t_plane plane, float x, float y);
 int			sign(float x);
 int			rotate_vector_xy(t_vector *a, float psin, float pcos);
@@ -1050,14 +1103,21 @@ Uint32		pix_from_text(SDL_Surface *texture, int x, int y);
 SDL_Surface	**split_surf(int w, int h, char *path, t_doom *d);
 int			translate_and_rotate_sprites(t_sprite *arr_spr, \
 												int len, t_player p);
+int			sprite_render_cliping(t_sprite_render *sr);
+void		sprite_render_cycle(t_sprite_render *sr, t_doom *d);
+/*
+painting
+*/
+void		painting_render_cycle(t_sprite_render *sr, t_doom *d);
 /*
 **load.c
 */
 int			sprite_sort(t_sprite *arr_spr, int len);
 // void		load_sprites(t_texture *texture, Uint32 format);
 int			*copy_static_arr(int *arr, const int len);
-int			game_mod(t_doom *doom);
+int			game_mod(t_doom *doom, char *file_name);
 void		move_mobs(t_doom *d);
+void		move_mobs_death(t_sprite *spr, t_doom *d, int m);
 int			first_own_moves(t_doom *d, t_sprite *spr);
 int			mirror_own_moves(t_doom *d, t_sprite *spr);
 int			init_moves(t_doom *d);
@@ -1066,8 +1126,6 @@ int			lift_floor_event(t_doom *d, t_painting *paint);
 int			turn_light_event(t_doom *d, t_painting *paint);
 int			lift_ceil_event(t_doom *d, t_painting *paint);
 int			inverse_colors_event(t_doom *d, t_painting *paint);
-int			first_aid_event(t_doom *d, t_painting *paint);
-int			get_ammo_event(t_doom *d, t_painting *paint);
 int			win_spr_event(t_doom *d, t_sprite *sprite);
 int			toxic_event(t_doom *d, t_sprite *sprite);
 int			talk_event(t_doom *d, t_sprite *sprite);
@@ -1093,9 +1151,9 @@ void		switch_music(t_sound *sound, SDL_Event ev);
 */
 void		show_pause(t_doom *d);
 void		show_lose(t_doom *d);
-void 		show_start(t_doom *d);
-void	    chose_level(t_doom *d);
-void	    chose_dificulty(t_doom *d);
+void		show_start(t_doom *d);
+void		chose_level(t_doom *d);
+void		chose_dificulty(t_doom *d);
 void		draw_menu(t_doom *d);
 void		menu_mouse(t_doom *d);
 void		start_events(t_doom *d);
@@ -1106,6 +1164,7 @@ void		lose_evens(t_doom *d);
 int 		in_rect(t_menu *menu, int opt);
 void		show_story(t_doom *d);
 void		free_menu(t_doom *d);
+void		lose_events(t_doom *d);
 
 void		set_mouse(t_doom *doom);
 
@@ -1116,6 +1175,7 @@ void		free_game_params(t_doom *d);
 */
 
 /* EDITOR */
+void			add_paintings(t_doom *doom, SDL_Event *ev);
 int				check_what_sprite_player_are_looking(t_doom *d);
 int				check_what_paint_player_are_looking(t_doom *d);
 int				game_mod_editor(t_doom *doom);
@@ -1141,7 +1201,7 @@ void			ft_mouse_release_edit(t_doom *doom, SDL_Event *event);
 void			ft_render_previous(t_doom *doom);
 void			ft_draw_axis(t_doom *doom);
 void			ft_prepare_editor(t_doom *doom, int i);
-int				ft_prepare_to_write(t_doom *doom, int i);
+// int				ft_prepare_to_write(t_doom *doom, int i);
 void			ft_prepare_read(t_doom *doom);
 void			ft_prepare_read2(t_doom *doom, int j);
 int				ft_specify_coor(int nbr);
@@ -1154,6 +1214,7 @@ void			info_action(t_doom *doom, int pain);
 void			info_action_sprites(t_doom *doom, int sp);
 void			info_f_c_w_s(t_doom *doom, int ind);
 void			info_f_c_w_s2(t_doom *doom);
+void			info_lift(t_doom *doom, int pain);
 int				check_what_line_player_are_looking(t_doom *d);
 void			editor_player_events(t_doom *doom);
 void			editor_player_events2(t_doom *doom, const Uint8 *state);
@@ -1176,6 +1237,7 @@ void			editor_start_z(t_doom *doom, const Uint8 *state);
 void			editor_end_z(t_doom *doom, const Uint8 *state);
 void			editor_sp_width(t_doom *doom, const Uint8 *state);
 void			editor_sprites_texture(t_doom *doom, const Uint8 *state);
+void			editor_sprites_texture2(t_doom *doom, const Uint8 *state, int sp);
 void			check_save_del(t_doom *doom, int fd);
 void			editor_fc_texture(t_doom *doom, const Uint8 *state);
 void			editor_wall_texture(t_doom *doom, const Uint8 *state);
@@ -1183,8 +1245,9 @@ void			editor_scale_x(t_doom *doom, const Uint8 *state);
 void			editor_scale_y(t_doom *doom, const Uint8 *state);
 void			editor_shift_x(t_doom *doom, const Uint8 *state);
 void			editor_shift_y(t_doom *doom, const Uint8 *state);
-void			lie_point(t_doom *doom, int k, int x, int y);
+void			lie_point(t_doom *doom, int x, int y);
 void			in_sector(t_doom *doom, SDL_Event *event);
+void			write_sprites(t_doom *doom);
 /*  titles */
 void			ft_put_text(char *str, int nb, char *str1);
 void			ft_error(int nb);
